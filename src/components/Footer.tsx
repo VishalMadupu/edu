@@ -81,6 +81,14 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
+                  href="/admin/login"
+                  className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
+                >
+                  Admin Portal
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/client/login"
                   className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
                 >

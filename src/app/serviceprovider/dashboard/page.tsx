@@ -5,7 +5,7 @@ import { DollarSign, Users, CalendarCheck, Star } from "lucide-react";
 
 export default function ServiceProviderDashboard() {
   return (
-    <DashboardLayout role="serviceprovider">
+    <DashboardLayout role="provider">
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Provider Dashboard</h1>

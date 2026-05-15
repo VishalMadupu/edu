@@ -5,7 +5,7 @@ import ProfileForm from "@/components/ProfileForm";
 
 export default function ServiceProviderProfile() {
   return (
-    <DashboardLayout role="serviceprovider">
+    <DashboardLayout role="provider">
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Provider Profile Settings</h1>

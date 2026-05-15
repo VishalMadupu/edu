@@ -2,33 +2,30 @@ import { API_URLS } from './urls';
 import { AuthResponse, LoginCredentials, ApiResponse } from './interface';
 
 export const adminService = {
-  login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    // In a real app, this would use fetch or axios to call API_URLS.AUTH.ADMIN.LOGIN
-    // Using FormData as expected by OAuth2PasswordRequestForm in backend
-    const formData = new FormData();
-    formData.append('username', credentials.email); // Backend expects username (which we use email for in some cases)
-    formData.append('password', credentials.password || '');
-
-    const response = await fetch(API_URLS.AUTH.ADMIN.LOGIN, {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error('Admin login failed');
+  login: async (credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> => {
+    try {
+      const response = await fetch(API_URLS.AUTH.ADMIN.LOGIN, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+      });
+      return await response.json();
+    } catch (error) {
+      return { success: false, message: 'An error occurred during admin login', error };
     }
+  },
 
-    const data = await response.json();
-    // Assuming backend returns { access_token: string, token_type: string }
-    return {
-      token: data.access_token,
-      user: {
-        id: 'admin-id',
-        email: credentials.email,
-        role: 'admin',
-        name: 'Super Admin',
-      }
-    };
+  signup: async (data: any): Promise<ApiResponse<any>> => {
+    try {
+      const response = await fetch(API_URLS.AUTH.ADMIN.SIGNUP, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      return await response.json();
+    } catch (error) {
+      return { success: false, message: 'An error occurred during admin signup', error };
+    }
   },
 
   getStats: async (token: string): Promise<any> => {

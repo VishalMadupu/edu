@@ -60,6 +60,14 @@ export default function page() {
       {/* display signup form in left for Service Provider */}
       <div className="flex-1 flex items-center justify-center p-8 bg-slate-50 dark:bg-slate-950">
         <div className="w-full max-w-md flex flex-col gap-8">
+          <div className="flex justify-center md:justify-start">
+            <Link
+              href="/"
+              className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white"
+            >
+              Service<span className="text-blue-600">Link</span>
+            </Link>
+          </div>
           <div className="flex flex-col gap-2 text-center md:text-left">
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Become a Provider</h1>
             <p className="text-sm text-slate-500 dark:text-slate-400">

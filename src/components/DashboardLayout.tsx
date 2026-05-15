@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { 
   LayoutDashboard, 
   UserCircle, 
@@ -15,12 +16,30 @@ import { Button } from "./ui/button";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  role: "client" | "serviceprovider";
+  role: "client" | "provider";
 }
 
 export default function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const storedRole = localStorage.getItem("user_role");
+    const token = localStorage.getItem("token") || localStorage.getItem("admin_token");
+
+    if (!token) {
+      router.push(`/${role === 'client' ? 'client' : 'serviceprovider'}/login`);
+      return;
+    }
+
+    if (storedRole !== role) {
+      // If user is logged in as client but tries to access provider dashboard, redirect them
+      if (storedRole === "client") router.push("/client/dashboard");
+      else if (storedRole === "provider") router.push("/serviceprovider/dashboard");
+      else if (storedRole === "admin") router.push("/admin/dashboard");
+    }
+  }, [role, router]);
 
   const navItems = role === "client" ? [
     { name: "Dashboard", href: "/client/dashboard", icon: LayoutDashboard },

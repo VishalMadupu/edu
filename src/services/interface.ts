@@ -14,13 +14,14 @@ export interface SignupData {
 export interface AuthUser {
   id: string;
   email: string;
-  role: 'client' | 'serviceprovider' | 'admin';
+  role: 'client' | 'provider' | 'admin';
   name?: string;
   avatarUrl?: string;
 }
 
 export interface AuthResponse {
-  token: string;
+  access_token: string;
+  token_type: string;
   user: AuthUser;
 }
 

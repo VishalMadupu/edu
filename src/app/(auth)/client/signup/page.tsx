@@ -60,6 +60,14 @@ export default function page() {
       {/* display login form in right */}
       <div className="flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-md flex flex-col gap-8">
+          <div className="flex justify-center md:justify-start">
+            <Link
+              href="/"
+              className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white"
+            >
+              Service<span className="text-blue-600">Link</span>
+            </Link>
+          </div>
           <div className="flex flex-col gap-2 text-center md:text-left">
             <h1 className="text-3xl font-bold tracking-tight">Client SignUp</h1>
             <p className="text-sm text-muted-foreground">

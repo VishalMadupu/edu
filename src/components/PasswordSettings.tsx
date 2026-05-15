@@ -24,7 +24,7 @@ export default function PasswordSettings() {
 
     try {
       const token = localStorage.getItem("token") || localStorage.getItem("admin_token");
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api"}/users/change-password`, {
+      const response = await fetch(API_URLS.USER.CHANGE_PASSWORD, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -47,7 +47,11 @@ export const ServiceProviderService = {
       const response = await fetch(API_URLS.AUTH.PROVIDER.LOGOUT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Ensure session cookies are cleared
       });
+      
+      localStorage.removeItem("token");
+      localStorage.removeItem("user_role");
       
       if (!response.ok) {
         return { success: false, message: 'Logout failed' };

@@ -8,12 +8,14 @@ export const API_URLS = {
       SIGNUP: `${API_BASE_URL}/auth/client/signup`,
       LOGOUT: `${API_BASE_URL}/auth/client/logout`,
       OAUTH: `${API_BASE_URL}/auth/client/oauth`,
+      OAUTH_URL: `${API_BASE_URL}/auth/client/oauth-url`,
     },
     PROVIDER: {
       LOGIN: `${API_BASE_URL}/auth/provider/login`,
       SIGNUP: `${API_BASE_URL}/auth/provider/signup`,
       LOGOUT: `${API_BASE_URL}/auth/provider/logout`,
       OAUTH: `${API_BASE_URL}/auth/provider/oauth`,
+      OAUTH_URL: `${API_BASE_URL}/auth/provider/oauth-url`,
     },
     ADMIN: {
       LOGIN: `${API_BASE_URL}/auth/admin/login`,

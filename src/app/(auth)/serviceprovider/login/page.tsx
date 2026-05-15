@@ -1,55 +1,85 @@
 "use client";
 
 import Image from "next/image";
-
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import loginpageimage from "../../../../../public/images/loginpage.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { ServiceProviderService } from "@/services/serviceprovider";
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { Suspense } from "react";
+import { Eye, EyeOff, Loader2, Mail, Lock, Info, Check, X } from "lucide-react";
+import Link from "next/link";
 
-function ProviderLoginForm() {
+const GoogleIcon = () => (
+  <svg className="w-5 h-5" viewBox="0 0 24 24">
+    <path
+      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      fill="#4285F4"
+    />
+    <path
+      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      fill="#34A853"
+    />
+    <path
+      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+      fill="#FBBC05"
+    />
+    <path
+      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+      fill="#EA4335"
+    />
+  </svg>
+);
+
+const AppleIcon = () => (
+  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="black">
+    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.04 2.24-.7 3.59-.71 1.58-.06 2.81.56 3.61 1.76-3.11 1.85-2.58 6.11.36 7.36-.69 1.48-1.57 2.87-2.64 3.76zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.39 2.4-2.06 4.38-3.74 4.25z" />
+  </svg>
+);
+
+function ProviderLoginContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     if (searchParams.get("signup") === "success") {
-      setSuccessMsg("Application submitted! Please login with your credentials.");
+      setSuccessMsg(
+        "Application submitted! Please login with your credentials.",
+      );
     }
   }, [searchParams]);
 
   const handleGoogleLogin = () => {
-    ServiceProviderService.oauthLogin('google');
+    ServiceProviderService.oauthLogin("google");
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     setError("");
     setSuccessMsg("");
-    setIsLoading(true);
 
     try {
       const response = await ServiceProviderService.login({ email, password });
       if (response.success && response.data) {
         localStorage.setItem("token", response.data.access_token);
         localStorage.setItem("user_role", "provider");
-        router.push("/serviceprovider/dashboard");
+        setShowSuccessModal(true);
+        setTimeout(() => {
+          router.push("/serviceprovider/dashboard");
+        }, 1500);
       } else {
-        setError(response.message || "Login failed. Please check your credentials.");
+        setError(response.message || "Your username or password is incorrect");
       }
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
       setError("An error occurred during login. Please try again.");
     } finally {
       setIsLoading(false);
@@ -57,143 +87,268 @@ function ProviderLoginForm() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded-lg text-sm">
-          {error}
-        </div>
-      )}
+    <div className="min-h-screen w-full bg-[#F8F9FB] flex">
+      {/* display image in left */}
+      <div className="hidden md:block w-1/2 p-4 lg:p-6 h-screen">
+        <div className="relative w-full h-full rounded-[40px] overflow-hidden shadow-sm">
+          <Image
+            className="object-cover"
+            src={loginpageimage}
+            alt="login background"
+            fill
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
-      {successMsg && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded-lg text-sm">
-          {successMsg}
-        </div>
-      )}
-
-      <form className="flex flex-col gap-4" onSubmit={handleLogin}>
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <Input 
-              id="email"
-              type="email" 
-              placeholder="name@example.com" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required 
-              disabled={isLoading}
-              className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
-            />
+          <div className="absolute top-8 right-10 flex items-center gap-3 text-white">
+            <div className="relative w-7 h-7">
+              <svg
+                viewBox="0 0 24 24"
+                fill="white"
+                className="w-full h-full"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10 2H14V10H22V14H14V22H10V14H2V10H10V2Z"
+                  fill="white"
+                />
+              </svg>
+            </div>
+            <span className="text-[22px] font-bold tracking-wide">
+              ServiceLink
+            </span>
           </div>
-          <div className="grid gap-2 relative">
-            <Input 
-              id="password"
-              type={showPassword ? "text" : "password"} 
-              placeholder="Password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required 
-              disabled={isLoading}
-              className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 pr-10"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-900 dark:hover:text-white"
-              tabIndex={-1}
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-        </div>
-        <Button type="submit" className="w-full mt-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200" disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Logging in...
-            </>
-          ) : (
-            "Login to Dashboard"
-          )}
-        </Button>
-      </form>
 
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-slate-200 dark:border-slate-800" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-slate-50 dark:bg-slate-950 px-2 text-slate-500">Or continue with</span>
+          <div className="absolute bottom-12 left-12 right-12 text-white">
+            <h2 className="text-[40px] leading-[1.1] font-bold mb-4 max-w-[400px]">
+              Empower the next generation of learners
+            </h2>
+            <p className="text-gray-300 text-[15px] max-w-[460px] leading-relaxed">
+              Join our platform to reach thousands of students globally. Manage
+              your schedule, set your rates, and teach what you love.
+            </p>
+          </div>
         </div>
       </div>
 
-      <Button 
-        variant="outline" 
-        type="button" 
-        className="w-full border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900"
-        onClick={handleGoogleLogin}
-      >
-        <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-          <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path>
-        </svg>
-        Google
-      </Button>
+      {/* display login form in right */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-[#F8F9FB] relative">
+        <div className="absolute top-8 left-8 md:top-10 md:left-12">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-8 h-8 bg-[#5D5FEF] rounded-lg flex items-center justify-center shadow-md group-hover:bg-[#4b4dc4] transition-colors">
+              <svg
+                viewBox="0 0 24 24"
+                fill="white"
+                className="w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10 2H14V10H22V14H14V22H10V14H2V10H10V2Z"
+                  fill="white"
+                />
+              </svg>
+            </div>
+            <span className="text-[22px] font-bold tracking-tight text-slate-900">
+              ServiceLink
+            </span>
+          </Link>
+        </div>
+
+        <div className="w-full max-w-[440px] flex flex-col mt-16 md:mt-0">
+          <div className="flex flex-col gap-2 text-center mb-10">
+            <h1 className="text-[32px] font-bold tracking-tight text-slate-900">
+              Provider Portal Login
+            </h1>
+            <p className="text-[15px] text-gray-500">
+              Welcome back! Please enter your details to manage your teaching
+              profile.
+            </p>
+          </div>
+
+          <div className="flex gap-4 mb-6">
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="flex-1 flex items-center justify-center gap-2 h-[48px] bg-white border border-gray-200 rounded-[14px] text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+            >
+              <GoogleIcon /> Sign in with Google
+            </button>
+            <button
+              type="button"
+              className="flex-1 flex items-center justify-center gap-2 h-[48px] bg-white border border-gray-200 rounded-[14px] text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+            >
+              <AppleIcon /> Sign in with Apple
+            </button>
+          </div>
+
+          <div className="relative flex items-center py-4 mb-6">
+            <div className="flex-grow border-t border-gray-200"></div>
+            <span className="flex-shrink-0 mx-4 text-gray-400 text-xs font-medium">
+              Or Sign in with
+            </span>
+            <div className="flex-grow border-t border-gray-200"></div>
+          </div>
+
+          {error && (
+            <div className="bg-[#FEF2F2] border border-[#FECACA] text-[#EF4444] px-4 py-3 rounded-[12px] text-[13px] flex items-center gap-2 mb-4 shadow-sm">
+              <Info className="w-4 h-4 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {successMsg && (
+            <div className="bg-[#ECFDF5] border border-[#A7F3D0] text-[#10B981] px-4 py-3 rounded-[12px] text-[13px] flex items-center gap-2 mb-4 shadow-sm">
+              <Check className="w-4 h-4 flex-shrink-0" />
+              <span>{successMsg}</span>
+            </div>
+          )}
+
+          <form className="flex flex-col gap-5" onSubmit={handleLogin}>
+            <div className="flex flex-col gap-2">
+              <label className="text-[13px] font-semibold text-gray-700 ml-1">
+                Email
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Mail className="h-[18px] w-[18px] text-gray-400" />
+                </div>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Input your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className={`pl-11 h-[52px] rounded-[14px] bg-white border-gray-200 focus-visible:ring-[#5D5FEF] text-[15px] shadow-sm ${error ? "border-[#EF4444] bg-[#FEF2F2]/50" : ""}`}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-[13px] font-semibold text-gray-700 ml-1">
+                Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Lock className="h-[18px] w-[18px] text-gray-400" />
+                </div>
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Input your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className={`pl-11 pr-12 h-[52px] rounded-[14px] bg-white border-gray-200 focus-visible:ring-[#5D5FEF] text-[15px] shadow-sm ${error ? "border-[#EF4444] bg-[#FEF2F2]/50" : ""}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between mt-2 mb-2 px-1">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="remember"
+                  className="rounded border-gray-300 text-[#5D5FEF] focus:ring-[#5D5FEF] w-[18px] h-[18px] cursor-pointer"
+                />
+                <label
+                  htmlFor="remember"
+                  className="text-[13px] text-gray-500 cursor-pointer font-medium"
+                >
+                  Remember me
+                </label>
+              </div>
+              <Link
+                href="#"
+                className="text-[13px] text-gray-500 hover:text-gray-800 font-medium transition-colors"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full h-[52px] mt-2 rounded-[14px] bg-[#5D5FEF] hover:bg-[#4b4dc4] text-white font-semibold text-[15px] shadow-md transition-all"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Logging in...
+                </>
+              ) : (
+                "Login to Dashboard"
+              )}
+            </Button>
+
+            <p className="text-center text-[13px] text-gray-500 mt-2">
+              Don't have a provider account?{" "}
+              <Link
+                href="/serviceprovider/signup"
+                className="text-[#5D5FEF] font-semibold hover:underline"
+              >
+                Apply to Teach
+              </Link>
+            </p>
+          </form>
+        </div>
+      </div>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+          <div className="bg-white rounded-[32px] p-10 max-w-[420px] w-full mx-4 flex flex-col items-center text-center shadow-2xl relative animate-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setShowSuccessModal(false)}
+              className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <div className="w-[88px] h-[88px] bg-[#e6f8f3] rounded-full flex items-center justify-center mb-6">
+              <div className="w-[60px] h-[60px] bg-[#34d399] rounded-full flex items-center justify-center shadow-lg shadow-[#34d399]/30">
+                <Check className="w-7 h-7 text-white stroke-[3]" />
+              </div>
+            </div>
+            <h2 className="text-[26px] font-bold text-gray-900 mb-3 tracking-tight">
+              Login Successful
+            </h2>
+            <p className="text-[15px] text-gray-500 mb-8 px-4 leading-relaxed">
+              Welcome back to ServiceLink! We are redirecting you to your
+              provider dashboard.
+            </p>
+            <Button
+              className="w-full h-[52px] bg-[#5D5FEF] hover:bg-[#4b4dc4] text-white rounded-[14px] font-semibold text-[16px] shadow-md transition-all"
+              onClick={() => router.push("/serviceprovider/dashboard")}
+            >
+              Get Started
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default function page() {
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row">
-      
-      {/* display login form in left for Service Provider */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-slate-50 dark:bg-slate-950">
-        <div className="w-full max-w-md flex flex-col gap-8">
-          <div className="flex justify-center md:justify-start">
-            <Link
-              href="/"
-              className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white"
-            >
-              Service<span className="text-blue-600">Link</span>
-            </Link>
-          </div>
-          <div className="flex flex-col gap-2 text-center md:text-left">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Provider Portal Login</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Welcome back! Please enter your details to manage your teaching profile.
-            </p>
-          </div>
-          
-          <Suspense fallback={<div className="flex justify-center p-8"><Loader2 className="animate-spin text-slate-900 dark:text-white" /></div>}>
-            <ProviderLoginForm />
-          </Suspense>
-          
-          <div className="text-center text-sm text-slate-500 dark:text-slate-400">
-            Don&apos;t have a provider account?{" "}
-            <Link href="/serviceprovider/signup" className="text-slate-900 dark:text-white hover:underline font-medium underline-offset-4">
-              Apply to Teach
-            </Link>
-          </div>
+    <Suspense
+      fallback={
+        <div className="min-h-screen w-full flex items-center justify-center bg-[#F8F9FB]">
+          <Loader2 className="animate-spin text-[#5D5FEF] w-8 h-8" />
         </div>
-      </div>
-
-      {/* display image in right  */}
-      <div className="hidden md:flex flex-1 flex-col justify-center items-center p-12 bg-slate-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-slate-900 opacity-90 z-10" />
-        <Image
-          className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay"
-          src={loginpageimage}
-          alt="background"
-          fill
-          priority
-        />
-        <div className="relative z-20 max-w-lg text-center space-y-6">
-          <h2 className="text-4xl font-bold leading-tight">Empower the next generation of learners</h2>
-          <p className="text-lg text-slate-300">
-            Join our platform to reach thousands of students globally. Manage your schedule, set your rates, and teach what you love.
-          </p>
-        </div>
-      </div>
-
-    </div>
+      }
+    >
+      <ProviderLoginContent />
+    </Suspense>
   );
 }

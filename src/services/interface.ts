@@ -8,6 +8,7 @@ export interface SignupData {
   password?: string;
   confirmPassword?: string;
   name?: string;
+  username?: string;
 }
 
 export interface AuthUser {

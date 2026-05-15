@@ -1,12 +1,10 @@
 import { LoginCredentials, SignupData, AuthResponse, ApiResponse } from './interface';
-
-// Base API URL config - replace with actual environment variable later
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
+import { API_URLS } from './urls';
 
 export const ServiceProviderService = {
   login: async (credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/serviceprovider/login`, {
+      const response = await fetch(API_URLS.AUTH.PROVIDER.LOGIN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
@@ -19,7 +17,7 @@ export const ServiceProviderService = {
 
   signup: async (data: SignupData): Promise<ApiResponse<AuthResponse>> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/serviceprovider/signup`, {
+      const response = await fetch(API_URLS.AUTH.PROVIDER.SIGNUP, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -32,7 +30,7 @@ export const ServiceProviderService = {
 
   logout: async (): Promise<ApiResponse<void>> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/serviceprovider/logout`, {
+      const response = await fetch(API_URLS.AUTH.PROVIDER.LOGOUT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -45,7 +43,7 @@ export const ServiceProviderService = {
   getDashboardData: async (): Promise<ApiResponse<any>> => {
     try {
       // Typically requires Authorization header with bearer token
-      const response = await fetch(`${API_BASE_URL}/serviceprovider/dashboard`, {
+      const response = await fetch(API_URLS.DASHBOARD.PROVIDER.STATS, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -57,7 +55,6 @@ export const ServiceProviderService = {
   
   oauthLogin: (provider: 'google' | 'github'): void => {
      // Backend-driven OAuth: Redirect browser to backend endpoint
-     const role = 'provider';
-     window.location.href = `http://localhost:8000/api/auth/${role}/oauth`;
+     window.location.href = API_URLS.AUTH.PROVIDER.OAUTH;
   }
 };

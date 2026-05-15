@@ -9,7 +9,14 @@ export const adminService = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
       });
-      return await response.json();
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        return { success: false, message: data.detail || 'Admin login failed', error: data };
+      }
+      
+      return { success: true, data };
     } catch (error) {
       return { success: false, message: 'An error occurred during admin login', error };
     }
@@ -22,9 +29,39 @@ export const adminService = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      return await response.json();
+      
+      const responseData = await response.json();
+      
+      if (!response.ok) {
+        return { success: false, message: responseData.detail || 'Admin signup failed', error: responseData };
+      }
+      
+      return { success: true, data: responseData };
     } catch (error) {
       return { success: false, message: 'An error occurred during admin signup', error };
+    }
+  },
+
+  updatePassword: async (token: string, data: any): Promise<ApiResponse<void>> => {
+    try {
+      const response = await fetch(API_URLS.USER.CHANGE_PASSWORD, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(data),
+      });
+      
+      const responseData = await response.json();
+      
+      if (!response.ok) {
+        return { success: false, message: responseData.detail || 'Password update failed', error: responseData };
+      }
+      
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: 'An error occurred during password update', error };
     }
   },
 
@@ -48,6 +85,7 @@ export const adminService = {
         'Authorization': `Bearer ${token}`
       }
     });
+    if (!response.ok) return [];
     return await response.json();
   },
 
@@ -57,6 +95,7 @@ export const adminService = {
         'Authorization': `Bearer ${token}`
       }
     });
+    if (!response.ok) return [];
     return await response.json();
   },
 
@@ -66,6 +105,7 @@ export const adminService = {
         'Authorization': `Bearer ${token}`
       }
     });
+    if (!response.ok) return [];
     return await response.json();
   }
 };

@@ -2,6 +2,7 @@
 
 import DashboardLayout from "@/components/DashboardLayout";
 import ProfileForm from "@/components/ProfileForm";
+import PasswordSettings from "@/components/PasswordSettings";
 
 export default function ClientProfile() {
   return (
@@ -13,6 +14,7 @@ export default function ClientProfile() {
         </div>
         
         <ProfileForm role="client" />
+        <PasswordSettings />
       </div>
     </DashboardLayout>
   );

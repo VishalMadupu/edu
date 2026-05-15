@@ -9,7 +9,14 @@ export const ServiceProviderService = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
       });
-      return await response.json();
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        return { success: false, message: data.detail || 'Login failed', error: data };
+      }
+      
+      return { success: true, data };
     } catch (error) {
       return { success: false, message: 'An error occurred during service provider login', error };
     }
@@ -22,7 +29,14 @@ export const ServiceProviderService = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      return await response.json();
+      
+      const responseData = await response.json();
+      
+      if (!response.ok) {
+        return { success: false, message: responseData.detail || 'Signup failed', error: responseData };
+      }
+      
+      return { success: true, data: responseData };
     } catch (error) {
       return { success: false, message: 'An error occurred during service provider sign up', error };
     }
@@ -34,7 +48,12 @@ export const ServiceProviderService = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
-      return await response.json();
+      
+      if (!response.ok) {
+        return { success: false, message: 'Logout failed' };
+      }
+      
+      return { success: true };
     } catch (error) {
       return { success: false, message: 'An error occurred during service provider logout', error };
     }
@@ -42,19 +61,28 @@ export const ServiceProviderService = {
   
   getDashboardData: async (): Promise<ApiResponse<any>> => {
     try {
-      // Typically requires Authorization header with bearer token
+      const token = localStorage.getItem("token");
       const response = await fetch(API_URLS.DASHBOARD.PROVIDER.STATS, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
       });
-      return await response.json();
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        return { success: false, message: data.detail || 'Failed to fetch dashboard data', error: data };
+      }
+      
+      return { success: true, data };
     } catch (error) {
       return { success: false, message: 'An error occurred fetching service provider dashboard', error };
     }
   },
   
   oauthLogin: (provider: 'google' | 'github'): void => {
-     // Backend-driven OAuth: Redirect browser to backend endpoint
      window.location.href = API_URLS.AUTH.PROVIDER.OAUTH;
   }
 };

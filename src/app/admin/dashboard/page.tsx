@@ -4,14 +4,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminService } from "@/services/admin";
 import { Button } from "@/components/ui/button";
-import { Loader2, Users, Briefcase, Mail, Phone, User as UserIcon } from "lucide-react";
+import { Loader2, Users, Briefcase, Mail, Phone, User as UserIcon, Settings as SettingsIcon } from "lucide-react";
+import PasswordSettings from "@/components/PasswordSettings";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<any>(null);
   const [clients, setClients] = useState<any[]>([]);
   const [providers, setProviders] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"clients" | "providers">("clients");
+  const [activeTab, setActiveTab] = useState<"clients" | "providers" | "settings">("clients");
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -108,73 +109,88 @@ export default function AdminDashboard() {
           >
             Manage Providers ({providers.length})
           </button>
+          <button 
+            onClick={() => setActiveTab("settings")}
+            className={`px-6 py-4 text-sm font-medium transition-colors ${activeTab === "settings" ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            <div className="flex items-center gap-2">
+              <SettingsIcon size={16} />
+              Platform Settings
+            </div>
+          </button>
         </div>
 
         <div className="p-0 overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-muted/50 text-xs uppercase tracking-wider">
-                <th className="px-6 py-4 font-semibold">User</th>
-                <th className="px-6 py-4 font-semibold">Contact Details</th>
-                <th className="px-6 py-4 font-semibold">Profile Info</th>
-                <th className="px-6 py-4 font-semibold text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {(activeTab === "clients" ? clients : providers).map((user: any) => (
-                <tr key={user.id} className="hover:bg-muted/30 transition-colors group">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                        {(user.first_name?.[0] || user.username?.[0] || "?").toUpperCase()}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-sm">{user.first_name} {user.last_name || user.username}</p>
-                        <p className="text-xs text-muted-foreground">ID: #{user.id}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-xs">
-                        <Mail size={14} className="text-muted-foreground" />
-                        <span>{user.email}</span>
-                      </div>
-                      {user.phone_number && (
-                        <div className="flex items-center gap-2 text-xs">
-                          <Phone size={14} className="text-muted-foreground" />
-                          <span>{user.phone_number}</span>
+          {activeTab === "settings" ? (
+            <div className="p-8 max-w-2xl">
+              <PasswordSettings />
+            </div>
+          ) : (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-muted/50 text-xs uppercase tracking-wider">
+                  <th className="px-6 py-4 font-semibold">User</th>
+                  <th className="px-6 py-4 font-semibold">Contact Details</th>
+                  <th className="px-6 py-4 font-semibold">Profile Info</th>
+                  <th className="px-6 py-4 font-semibold text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {(activeTab === "clients" ? clients : providers).map((user: any) => (
+                  <tr key={user.id} className="hover:bg-muted/30 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                          {(user.first_name?.[0] || user.username?.[0] || "?").toUpperCase()}
                         </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="max-w-xs truncate text-xs text-muted-foreground">
-                      {activeTab === "providers" ? (
-                        <>
-                          <span className="font-medium text-foreground">{user.specialization || "General"}</span>
-                          <span className="mx-2">•</span>
-                          <span>${user.hourly_rate || 0}/hr</span>
-                        </>
-                      ) : (
-                        user.bio || "No bio provided"
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100">View Details</Button>
-                  </td>
-                </tr>
-              ))}
-              {(activeTab === "clients" ? clients : providers).length === 0 && (
-                <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-muted-foreground italic">
-                    No users found in this category.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                        <div>
+                          <p className="font-semibold text-sm">{user.first_name} {user.last_name || user.username}</p>
+                          <p className="text-xs text-muted-foreground">ID: #{user.id}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-xs">
+                          <Mail size={14} className="text-muted-foreground" />
+                          <span>{user.email}</span>
+                        </div>
+                        {user.phone_number && (
+                          <div className="flex items-center gap-2 text-xs">
+                            <Phone size={14} className="text-muted-foreground" />
+                            <span>{user.phone_number}</span>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="max-w-xs truncate text-xs text-muted-foreground">
+                        {activeTab === "providers" ? (
+                          <>
+                            <span className="font-medium text-foreground">{user.specialization || "General"}</span>
+                            <span className="mx-2">•</span>
+                            <span>${user.hourly_rate || 0}/hr</span>
+                          </>
+                        ) : (
+                          user.bio || "No bio provided"
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100">View Details</Button>
+                    </td>
+                  </tr>
+                ))}
+                {(activeTab === "clients" ? clients : providers).length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-12 text-center text-muted-foreground italic">
+                      No users found in this category.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

@@ -151,6 +151,29 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} ServiceLink Inc. All rights
             reserved.
           </p>
+          <div className="flex flex-col items-center md:items-end gap-1">
+            <p className="text-sm font-medium text-slate-900 dark:text-white">
+              Developed by <span className="text-blue-600">Vishal Madupu</span>
+            </p>
+            <div className="flex gap-4">
+              <a
+                href="https://github.com/vishalmadupu"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-slate-500 hover:text-blue-600 transition-colors"
+              >
+                GitHub
+              </a>
+              <a
+                href="https://www.linkedin.com/in/vishalreddy4500/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-slate-500 hover:text-blue-600 transition-colors"
+              >
+                LinkedIn
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

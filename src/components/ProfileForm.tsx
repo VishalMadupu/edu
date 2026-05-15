@@ -86,6 +86,38 @@ export default function ProfileForm({ role }: ProfileFormProps) {
     }
   };
 
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
+  const handleAiBio = async () => {
+    if (!formData.bio && !formData.specialization) {
+      setMessage({ type: "error", text: "Please enter some details in bio or specialization first." });
+      return;
+    }
+    
+    setIsAiLoading(true);
+    try {
+      const response = await fetch("/api/ai/optimize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: "Enhance my professional teacher bio to be more engaging for students.",
+          context: `Current Bio: ${formData.bio}\nSpecialization: ${formData.specialization}\nName: ${formData.first_name} ${formData.last_name}`
+        })
+      });
+      const data = await response.json();
+      if (data.result) {
+        setFormData(prev => ({ ...prev, bio: data.result }));
+        setMessage({ type: "success", text: "Bio enhanced with AI!" });
+      } else {
+        setMessage({ type: "error", text: data.error || "AI enhancement failed." });
+      }
+    } catch (error) {
+      setMessage({ type: "error", text: "Failed to connect to AI service." });
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
   if (isLoading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin" /></div>;
 
   return (
@@ -134,12 +166,24 @@ export default function ProfileForm({ role }: ProfileFormProps) {
                 <Input name="specialization" value={formData.specialization} onChange={handleInputChange} placeholder="e.g. Mathematics, Piano" />
               </div>
               <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-medium">Bio</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Bio</label>
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleAiBio}
+                    disabled={isAiLoading}
+                    className="text-blue-600 hover:text-blue-700 h-7 text-xs flex gap-1"
+                  >
+                    {isAiLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : "✨ Enhance with AI"}
+                  </Button>
+                </div>
                 <textarea 
                   name="bio"
                   value={formData.bio}
                   onChange={handleInputChange}
-                  className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   placeholder="Tell students about your experience..."
                 />
               </div>

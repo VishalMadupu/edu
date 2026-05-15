@@ -86,20 +86,9 @@ export const ClientService = {
     }
   },
   
-  oauthLogin: async (provider: 'google' | 'github'): Promise<void> => {
-    try {
-      const response = await fetch(API_URLS.AUTH.CLIENT.OAUTH_URL, {
-        method: 'GET',
-        credentials: 'include', // Important for session cookies
-      });
-      const data = await response.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        console.error("Failed to get OAuth URL");
-      }
-    } catch (error) {
-      console.error("Error during OAuth login initiation:", error);
-    }
+  oauthLogin: (provider: 'google' | 'github'): void => {
+    // Direct browser navigation ensures the session cookie (with OAuth state)
+    // is properly set on the backend domain — fetch() doesn't work cross-origin.
+    window.location.href = API_URLS.AUTH.CLIENT.OAUTH;
   }
 };

@@ -15,7 +15,20 @@ export const API_URLS = {
       LOGOUT: `${API_BASE_URL}/auth/provider/logout`,
       OAUTH: `${API_BASE_URL}/auth/provider/oauth`,
     },
+    ADMIN: {
+      LOGIN: `${API_BASE_URL}/auth/admin/login`,
+      SIGNUP: `${API_BASE_URL}/auth/admin/signup`,
+      LOGOUT: `${API_BASE_URL}/auth/admin/logout`,
+    },
     VERIFY_TOKEN: `${API_BASE_URL}/auth/verify`,
+  },
+
+  // Admin Endpoints
+  ADMIN: {
+    STATS: `${API_BASE_URL}/admin/stats`,
+    CLIENTS: `${API_BASE_URL}/admin/clients`,
+    PROVIDERS: `${API_BASE_URL}/admin/providers`,
+    PROJECTS: `${API_BASE_URL}/admin/projects`,
   },
 
   // User Profile Endpoints

@@ -56,7 +56,8 @@ export const ServiceProviderService = {
   },
   
   oauthLogin: (provider: 'google' | 'github'): void => {
-     // Implement OAuth redirect logic here
-     window.location.href = `${API_BASE_URL}/auth/${provider}?role=serviceprovider`;
+     // Backend-driven OAuth: Redirect browser to backend endpoint
+     const role = 'provider';
+     window.location.href = `http://localhost:8000/api/auth/${role}/oauth`;
   }
 };

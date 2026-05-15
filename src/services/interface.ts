@@ -13,7 +13,7 @@ export interface SignupData {
 export interface AuthUser {
   id: string;
   email: string;
-  role: 'client' | 'serviceprovider';
+  role: 'client' | 'serviceprovider' | 'admin';
   name?: string;
   avatarUrl?: string;
 }

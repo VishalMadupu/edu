@@ -145,6 +145,8 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+        </div>
+
         <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-slate-500 dark:text-slate-400">
             &copy; {new Date().getFullYear()} Edtech. All rights
@@ -175,7 +177,6 @@ export default function Footer() {
             </div>
           </div>
         </div>
-      </div>
       </div>
     </footer>
   );

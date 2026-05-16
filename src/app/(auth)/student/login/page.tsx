@@ -26,10 +26,14 @@ function LoginContent() {
     if (searchParams.get("signup") === "success") {
       setSuccessMsg("Signup successful! Please login with your credentials.");
     }
+    const urlError = searchParams.get("error");
+    if (urlError) {
+      setError(urlError);
+    }
   }, [searchParams]);
 
   const handleGoogleLogin = () => {
-    StudentService.oauthLogin('google');
+    StudentService.oauthLogin('google', 'login');
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -86,7 +90,7 @@ function LoginContent() {
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <span className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white">
-              Ed<span className="text-blue-600">techtech</span>
+              Ed<span className="text-blue-600">tech</span>
             </span>
           </Link>
         </div>

@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <span className="text-[22px] font-bold tracking-tight text-white">
-              Ed<span className="text-blue-400">techtech</span>
+              Ed<span className="text-blue-400">tech</span>
             </span>
           </div>
 
@@ -108,7 +108,7 @@ export default function AdminLoginPage() {
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <span className="text-[22px] font-bold tracking-tight text-slate-900">
-              Ed<span className="text-blue-600">techtech</span>
+              Ed<span className="text-blue-600">tech</span>
             </span>
           </Link>
         </div>

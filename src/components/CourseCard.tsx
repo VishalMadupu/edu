@@ -16,6 +16,7 @@ interface CourseCardProps {
   isFree?: boolean;
   category?: string;
   previewVideoUrl?: string;
+  href?: string;
 }
 
 export default function CourseCard({
@@ -29,8 +30,11 @@ export default function CourseCard({
   price = 49.99,
   isFree = false,
   category = "Development",
-  previewVideoUrl
+  previewVideoUrl,
+  href
 }: CourseCardProps) {
+  const linkHref = href || `/courses/${id}`;
+
   return (
     <div className="group bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1">
       {/* Thumbnail Area */}
@@ -49,9 +53,9 @@ export default function CourseCard({
         )}
         
         {/* Hover Preview Overlay */}
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+        <Link href={linkHref} className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           <PlayCircle className="w-12 h-12 text-white" />
-        </div>
+        </Link>
 
         {/* Category Badge */}
         <Badge className="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 text-slate-900 dark:text-white hover:bg-white/90">
@@ -62,7 +66,7 @@ export default function CourseCard({
       {/* Content Area */}
       <div className="p-5">
         <h3 className="font-bold text-lg leading-tight text-slate-900 dark:text-white line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">
-          <Link href={`/courses/${id}`}>{title}</Link>
+          <Link href={linkHref}>{title}</Link>
         </h3>
         
         <div className="flex items-center gap-2 mb-3 text-sm text-slate-500 dark:text-slate-400">

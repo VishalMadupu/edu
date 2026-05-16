@@ -1,14 +1,63 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
-import { DollarSign, Users, Video, Star, Plus, BarChart3, BookOpen, Clock } from "lucide-react";
+import { DollarSign, Users, Video, Star, Plus, BarChart3, BookOpen, Clock, Loader2, PlayCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CourseCard from "@/components/CourseCard";
 import CreateCourseModal from "@/components/CreateCourseModal";
+import AddVideoModal from "@/components/AddVideoModal";
+import { API_URLS } from "@/services/urls";
 
 export default function TutorDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddVideoOpen, setIsAddVideoOpen] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState<number | string | null>(null);
+  const [courses, setCourses] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [expandedCourse, setExpandedCourse] = useState<number | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token") || localStorage.getItem("admin_token");
+    if (token) {
+      fetchData(token);
+    }
+  }, []);
+
+  const fetchData = async (token: string) => {
+    setIsLoading(true);
+    try {
+      const profileRes = await fetch(API_URLS.USER.PROFILE, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (profileRes.ok) {
+        const profileData = await profileRes.json();
+        setUserProfile(profileData);
+
+        if (profileData.id) {
+          // 2. Fetch Courses for this specific tutor
+          const coursesRes = await fetch(API_URLS.PLATFORM.TUTORS.COURSES(profileData.id), {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+          if (coursesRes.ok) {
+            const coursesData = await coursesRes.json();
+            setCourses(coursesData);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Dashboard fetch error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  
+  };
+
+  const openAddVideo = (courseId: number | string) => {
+    setSelectedCourseId(courseId);
+    setIsAddVideoOpen(true);
+  };
 
   return (
     <DashboardLayout role="tutor">
@@ -47,7 +96,7 @@ export default function TutorDashboard() {
           />
           <StatCard 
             title="Active Courses" 
-            value="5" 
+            value={courses.length.toString()} 
             icon={<BookOpen className="h-5 w-5 text-purple-500" />} 
           />
           <StatCard 
@@ -64,50 +113,119 @@ export default function TutorDashboard() {
               <Video className="w-6 h-6 text-indigo-600" />
               My Published Courses
             </h2>
-            <Button variant="ghost" className="text-indigo-600">Manage All</Button>
+            <Button variant="ghost" className="text-indigo-600" onClick={() => fetchData(localStorage.getItem("token") || "")}>
+              Refresh List
+            </Button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <CourseCard 
-              id={101}
-              title="Next.js 16 Masterclass: From Zero to Production"
-              teacherName="Me (Vishal)"
-              category="Development"
-              duration="22h 30m"
-              rating={4.9}
-              studentCount={420}
-              price={99.99}
-            />
-            <CourseCard 
-              id={102}
-              title="Advanced TypeScript for Enterprise Scale"
-              teacherName="Me (Vishal)"
-              category="Development"
-              duration="12h 15m"
-              rating={4.8}
-              studentCount={215}
-              price={79.99}
-            />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Real Fetched Courses */}
+            {courses.map((course) => (
+              <div key={course.id} className="flex flex-col gap-3">
+                <div className="relative group">
+                  <CourseCard 
+                    id={course.id}
+                    title={course.title}
+                    teacherName={userProfile?.username || "Me"}
+                    category={course.category || "Development"}
+                    duration={`${course.videos?.length || 0} Lessons`}
+                    rating={4.9}
+                    studentCount={0}
+                    price={course.price}
+                    isFree={course.is_free}
+                  />
+                </div>
+                <div className="flex flex-col gap-2 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+                   <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{course.videos?.length || 0} Lessons Published</span>
+                      <button 
+                        onClick={() => setExpandedCourse(expandedCourse === course.id ? null : course.id)}
+                        className="text-indigo-600 text-xs font-bold flex items-center gap-1 hover:underline"
+                      >
+                        {expandedCourse === course.id ? <><ChevronUp size={14} /> Hide</> : <><ChevronDown size={14} /> View Lessons</>}
+                      </button>
+                   </div>
+                   
+                   {expandedCourse === course.id && (
+                     <div className="mt-3 space-y-2 animate-in slide-in-from-top-2 duration-200">
+                        {course.videos?.map((v: any, i: number) => (
+                          <div key={v.id} className="flex items-center gap-3 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                             <div className="w-6 h-6 rounded bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] font-bold">{i+1}</div>
+                             <p className="text-xs font-semibold truncate flex-1">{v.title}</p>
+                             <PlayCircle size={14} className="text-slate-300" />
+                          </div>
+                        ))}
+                        {(!course.videos || course.videos.length === 0) && (
+                          <p className="text-[10px] text-slate-400 italic py-2 text-center">No lessons added yet.</p>
+                        )}
+                     </div>
+                   )}
+
+                   <Button 
+                     variant="outline"
+                     size="sm" 
+                     className="w-full mt-2 rounded-xl font-bold border-indigo-100 text-indigo-600 hover:bg-indigo-50 h-10"
+                     onClick={() => openAddVideo(course.id)}
+                   >
+                     <Plus className="w-4 h-4 mr-2" /> Add Video Lesson
+                   </Button>
+                </div>
+              </div>
+            ))}
+
+            {/* Static Placeholder Cards (Always kept as per request) */}
+            <div className="opacity-60 grayscale-[0.5]">
+              <CourseCard 
+                id={101}
+                title="Next.js 16 Masterclass: From Zero to Production"
+                teacherName="Me (Vishal)"
+                category="Development"
+                duration="22h 30m"
+                rating={4.9}
+                studentCount={420}
+                price={99.99}
+              />
+            </div>
+            <div className="opacity-60 grayscale-[0.5]">
+              <CourseCard 
+                id={102}
+                title="Advanced TypeScript for Enterprise Scale"
+                teacherName="Me (Vishal)"
+                category="Development"
+                duration="12h 15m"
+                rating={4.8}
+                studentCount={215}
+                price={79.99}
+              />
+            </div>
+
+            {isLoading && courses.length === 0 && (
+              <div className="col-span-full flex justify-center py-12">
+                <Loader2 className="animate-spin text-indigo-600 w-8 h-8" />
+              </div>
+            )}
+
             <div 
               onClick={() => setIsModalOpen(true)}
-              className="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-8 flex flex-col items-center justify-center text-center hover:border-indigo-400 transition-colors group cursor-pointer"
+              className="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[32px] p-8 flex flex-col items-center justify-center text-center hover:border-indigo-400 transition-colors group cursor-pointer h-full min-h-[300px]"
             >
-               <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/30 transition-colors">
-                  <Plus className="w-6 h-6 text-slate-400 group-hover:text-indigo-600" />
+               <div className="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/30 transition-colors shadow-inner">
+                  <Plus className="w-7 h-7 text-slate-400 group-hover:text-indigo-600" />
                </div>
                <h3 className="font-bold text-slate-900 dark:text-white mb-2">Create a New Course</h3>
-               <p className="text-sm text-slate-500 dark:text-slate-400">Share your knowledge and start earning.</p>
+               <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[200px]">Share your knowledge and start building your brand.</p>
             </div>
           </div>
         </section>
 
         {/* Recent Student Enrollment */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] overflow-hidden shadow-sm">
           <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <h2 className="text-xl font-bold flex items-center gap-2">
               <Users className="w-5 h-5 text-blue-500" />
               Recent Enrollments
             </h2>
-            <Button variant="outline" size="sm">View All</Button>
+            <Button variant="outline" size="sm" className="rounded-xl font-bold">View All</Button>
           </div>
           <div className="divide-y divide-slate-50 dark:divide-slate-800">
             {[
@@ -118,7 +236,7 @@ export default function TutorDashboard() {
             ].map((enrollment, i) => (
               <div key={i} className="p-6 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-lg">
+                  <div className="h-12 w-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-lg">
                     {enrollment.name.charAt(0)}
                   </div>
                   <div>
@@ -143,22 +261,35 @@ export default function TutorDashboard() {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         onSuccess={() => {
-          // Trigger refresh logic here if needed
+          const token = localStorage.getItem("token") || localStorage.getItem("admin_token");
+          if (token) fetchData(token);
           console.log("Course created!");
         }}
       />
+
+      {selectedCourseId && (
+        <AddVideoModal 
+          isOpen={isAddVideoOpen}
+          onClose={() => setIsAddVideoOpen(false)}
+          courseId={selectedCourseId}
+          onSuccess={() => {
+            const token = localStorage.getItem("token") || localStorage.getItem("admin_token");
+            if (token) fetchData(token);
+          }}
+        />
+      )}
     </DashboardLayout>
   );
 }
 
 function StatCard({ title, value, icon }: { title: string, value: string, icon: React.ReactNode }) {
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col gap-2 hover:border-indigo-500/50 transition-colors">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm flex flex-col gap-2 hover:border-indigo-500/50 transition-colors text-slate-900 dark:text-white">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{title}</span>
         <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">{icon}</div>
       </div>
-      <div className="text-3xl font-bold text-slate-900 dark:text-white">{value}</div>
+      <div className="text-3xl font-bold">{value}</div>
     </div>
   );
 }

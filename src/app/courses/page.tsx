@@ -1,77 +1,43 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import MarketingNavbar from "@/components/MarketingNavbar";
 import Footer from "@/components/Footer";
 import CourseCard from "@/components/CourseCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, BookOpen } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-
-const COURSES = [
-  {
-    id: 1,
-    title: "Advanced React Patterns & Web Performance",
-    teacherName: "Sarah Drasner",
-    category: "Development",
-    duration: "18h 45m",
-    rating: 4.9,
-    studentCount: 15420,
-    price: 89.99,
-  },
-  {
-    id: 2,
-    title: "Full Stack AI-Enhanced Platform Architecture",
-    teacherName: "Guillermo Rauch",
-    category: "Software Architecture",
-    duration: "10h 20m",
-    rating: 5.0,
-    studentCount: 8230,
-    price: 129.99,
-  },
-  {
-    id: 3,
-    title: "UI/UX Design Systems with Figma & Tailwind",
-    teacherName: "Adam Wathan",
-    category: "Design",
-    duration: "14h 15m",
-    rating: 4.8,
-    studentCount: 24100,
-    price: 59.99,
-  },
-  {
-    id: 4,
-    title: "Introduction to Machine Learning with Python",
-    teacherName: "Andrew Ng",
-    category: "Data Science",
-    duration: "24h 00m",
-    rating: 4.9,
-    studentCount: 450000,
-    isFree: true,
-  },
-  {
-    id: 5,
-    title: "Digital Marketing Masterclass 2026",
-    teacherName: "Neil Patel",
-    category: "Marketing",
-    duration: "15h 30m",
-    rating: 4.7,
-    studentCount: 12400,
-    price: 44.99,
-  },
-  {
-    id: 6,
-    title: "iOS App Development with Swift & SwiftUI",
-    teacherName: "Angela Yu",
-    category: "Mobile",
-    duration: "32h 10m",
-    rating: 4.9,
-    studentCount: 65200,
-    price: 79.99,
-  },
-];
+import { Search, Filter, BookOpen, Loader2 } from "lucide-react";
+import { API_URLS } from "@/services/urls";
 
 export default function CoursesPage() {
+  const [courses, setCourses] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(API_URLS.PLATFORM.COURSES.LIST);
+      if (response.ok) {
+        const data = await response.json();
+        setCourses(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch courses:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredCourses = courses.filter(course => 
+    course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (course.category && course.category.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col">
       <MarketingNavbar />
@@ -79,7 +45,7 @@ export default function CoursesPage() {
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-12 md:py-16">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
           <div className="max-w-xl">
-            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4">
+            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4 uppercase tracking-wider">
               Explore Our Courses
             </h1>
             <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -93,6 +59,8 @@ export default function CoursesPage() {
             <Input
               placeholder="Search for courses, skills, or tutors..."
               className="pl-10 h-12 rounded-xl border-slate-200 focus:ring-blue-500"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
         </div>
@@ -111,7 +79,6 @@ export default function CoursesPage() {
             "Data Science",
             "Marketing",
             "Business",
-            "Photography",
             "Music",
           ].map((cat) => (
             <Button
@@ -133,13 +100,34 @@ export default function CoursesPage() {
 
         {/* Course Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {COURSES.map((course) => (
-            <CourseCard key={course.id} {...course} />
+          {filteredCourses.map((course) => (
+            <CourseCard 
+              key={course.id} 
+              id={course.id}
+              title={course.title}
+              teacherName="Expert Tutor"
+              category={course.category || "Development"}
+              price={course.price}
+              isFree={course.is_free}
+            />
           ))}
+
+          {/* Static Design Preservation */}
+          {filteredCourses.length === 0 && !isLoading && (
+            <div className="col-span-full text-center py-20 text-slate-400 font-bold">
+               No courses match your search. Explore our featured content below.
+            </div>
+          )}
+
+          {isLoading && (
+            <div className="col-span-full flex justify-center py-12">
+               <Loader2 className="animate-spin text-blue-600 w-10 h-10" />
+            </div>
+          )}
         </div>
 
-        {/* Empty State / Pagination Placeholder */}
-        <div className="mt-16 text-center border-t border-slate-200 dark:border-slate-800 pt-16">
+        {/* Featured Section if Empty or at Bottom */}
+        <div className="mt-24 text-center border-t border-slate-200 dark:border-slate-800 pt-16">
           <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <BookOpen className="w-8 h-8 text-blue-600" />
           </div>
@@ -147,10 +135,10 @@ export default function CoursesPage() {
             Want to see more?
           </h2>
           <p className="text-slate-500 dark:text-slate-400 mb-8">
-            Join our platform to unlock 500+ premium courses and tutorials.
+            Join our platform to unlock premium courses and tutorials.
           </p>
-          <Button className="bg-blue-600 hover:bg-blue-700 h-11 px-8">
-            Join Edtechtech
+          <Button className="bg-blue-600 hover:bg-blue-700 h-11 px-8 rounded-xl font-bold shadow-lg">
+            Join Edtech Now
           </Button>
         </div>
       </main>

@@ -12,11 +12,12 @@ export interface SignupData {
 }
 
 export interface AuthUser {
-  id: string;
   email: string;
-  role: 'client' | 'provider' | 'admin';
-  name?: string;
-  avatarUrl?: string;
+  username: string;
+  user_type: string;
+  first_name?: string;
+  last_name?: string;
+  profile_image?: string;
 }
 
 export interface AuthResponse {

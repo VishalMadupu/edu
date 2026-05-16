@@ -22,7 +22,7 @@ export default function page() {
   const router = useRouter();
 
   const handleGoogleSignup = () => {
-    StudentService.oauthLogin("google");
+    StudentService.oauthLogin('google', 'signup');
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -72,6 +72,9 @@ export default function page() {
         {/* Logo Top Left */}
         <div className="absolute top-8 left-8">
           <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 group-hover:scale-105 transition-transform">
+              <GraduationCap className="w-5 h-5 text-white" />
+            </div>
             <span className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white">
               Ed<span className="text-blue-600">tech</span>
             </span>

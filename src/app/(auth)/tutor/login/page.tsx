@@ -7,19 +7,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { TutorService } from "@/services/tutor";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Loader2, GraduationCap } from "lucide-react";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Loader2, GraduationCap, Eye, EyeOff } from "lucide-react";
 
-export default function page() {
+function TutorLoginContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const urlError = searchParams.get("error");
+    if (urlError) {
+      setError(urlError);
+    }
+  }, [searchParams]);
 
   const handleGoogleLogin = () => {
-    TutorService.oauthLogin('google');
+    TutorService.oauthLogin('google', 'login');
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -33,11 +42,11 @@ export default function page() {
         localStorage.setItem("user_role", response.data.user.user_type);
         router.push("/tutor/dashboard");
       } else {
-        setError(response.message || "Login failed");
+        setError(response.message || "Login failed. Please check your credentials.");
       }
     } catch (err) {
       console.error(err);
-      setError("An unexpected error occurred");
+      setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +64,7 @@ export default function page() {
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <span className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white">
-              Ed<span className="text-blue-600">techtech</span>
+              Ed<span className="text-blue-600">tech</span>
             </span>
           </Link>
         </div>
@@ -89,17 +98,25 @@ export default function page() {
                     className="h-11 rounded-xl"
                   />
                 </div>
-                <div className="grid gap-2">
+                <div className="grid gap-2 relative">
                   <Input 
                     id="password"
-                    type="password" 
+                    type={showPassword ? "text" : "password"} 
                     placeholder="Password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required 
                     disabled={isLoading}
-                    className="h-11 rounded-xl"
+                    className="h-11 rounded-xl pr-10"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
               </div>
               <Button type="submit" className="w-full mt-2 h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold" disabled={isLoading}>
@@ -180,5 +197,13 @@ export default function page() {
       </div>
 
     </div>
+  );
+}
+
+export default function page() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-500 font-medium">Loading teacher portal...</div>}>
+      <TutorLoginContent />
+    </Suspense>
   );
 }

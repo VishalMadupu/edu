@@ -72,7 +72,7 @@ export default function AdminDashboard() {
                 <GraduationCap className="text-white w-6 h-6" />
              </div>
              <div>
-               <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Edtechtech Admin</h1>
+               <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Edtech Admin</h1>
                <p className="text-slate-500 text-sm">Platform oversight and educator management.</p>
              </div>
           </div>

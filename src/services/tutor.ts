@@ -86,9 +86,9 @@ export const TutorService = {
     }
   },
   
-  oauthLogin: (provider: 'google' | 'github'): void => {
+  oauthLogin: (provider: 'google' | 'github', mode: 'login' | 'signup' = 'login'): void => {
     // Direct browser navigation ensures the session cookie (with OAuth state)
     // is properly set on the backend domain — fetch() doesn't work cross-origin.
-    window.location.href = API_URLS.AUTH.TUTOR.OAUTH;
+    window.location.href = `${API_URLS.AUTH.TUTOR.OAUTH}?mode=${mode}`;
   }
 };

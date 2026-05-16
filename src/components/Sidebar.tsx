@@ -41,7 +41,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen, role }: SidebarPr
         <div className="p-8 hidden md:block">
           <Link href="/" className="flex items-center gap-2">
             <span className="font-bold text-2xl tracking-tighter text-slate-900 dark:text-white">
-              Ed<span className="text-blue-600">techtech</span>
+              Ed<span className="text-blue-600">tech</span>
             </span>
           </Link>
           <div className="mt-1 text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold">

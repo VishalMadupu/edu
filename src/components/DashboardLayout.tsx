@@ -129,7 +129,7 @@ export default function DashboardLayout({
               <Menu className="h-6 w-6" />
             </Button>
             <div className="md:hidden font-bold text-xl">
-               Ed<span className="text-blue-600">techtech</span>
+               Ed<span className="text-blue-600">tech</span>
             </div>
             <h2 className="hidden md:block text-sm font-bold text-slate-500 uppercase tracking-widest">
                {pathname.split('/').pop()?.replace('-', ' ')}

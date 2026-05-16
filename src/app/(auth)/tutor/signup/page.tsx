@@ -22,7 +22,7 @@ export default function page() {
   const router = useRouter();
 
   const handleGoogleSignup = () => {
-    TutorService.oauthLogin('google');
+    TutorService.oauthLogin('google', 'signup');
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -63,11 +63,11 @@ export default function page() {
         {/* Logo Top Left */}
         <div className="absolute top-8 left-8">
           <Link href="/" className="flex items-center gap-2 group">
-            {/* <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/20 group-hover:scale-105 transition-transform">
+            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 group-hover:scale-105 transition-transform">
               <GraduationCap className="w-5 h-5 text-white" />
-            </div> */}
+            </div>
             <span className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white">
-              Ed<span className="text-blue-600">techtech</span>
+              Ed<span className="text-blue-600">tech</span>
             </span>
           </Link>
         </div>
@@ -217,7 +217,7 @@ export default function page() {
           priority
         />
         <div className="relative z-20 max-w-lg text-center space-y-6">
-         <GraduationCap className="w-20 h-20 mx-auto mb-4 text-indigo-400" />
+          <GraduationCap className="w-20 h-20 mx-auto mb-4 text-indigo-400" />
           <h2 className="text-4xl font-extrabold leading-tight tracking-tight">Shape the future of global education</h2>
           <p className="text-lg text-indigo-100/80 leading-relaxed">
             Join a platform that values expertise. Create comprehensive courses, mentor ambitious students, and grow your digital teaching legacy.

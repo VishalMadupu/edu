@@ -87,7 +87,7 @@ export default function MarketingNavbar() {
         <div className="flex items-center gap-6 md:gap-10">
           <Link href="/" className="flex items-center gap-2 group">
             <span className="text-xl font-bold tracking-tighter text-slate-900 dark:text-white">
-              Ed<span className="text-blue-600">techtech</span>
+              Ed<span className="text-blue-600">tech</span>
             </span>
           </Link>
           <nav className="hidden md:flex gap-6">

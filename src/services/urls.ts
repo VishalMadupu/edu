@@ -63,7 +63,7 @@ export const API_URLS = {
       DELETE: (id: string) => `${API_BASE_URL}/courses/${id}/delete`,
       FREE: `${API_BASE_URL}/courses/free`,
       PAID: `${API_BASE_URL}/courses/paid`,
-      BY_CATEGORY: (category: str) => `${API_BASE_URL}/courses/category/${category}`,
+      BY_CATEGORY: (category: string) => `${API_BASE_URL}/courses/category/${category}`,
     },
     VIDEOS: {
       UPLOAD: `${API_BASE_URL}/videos/upload`,

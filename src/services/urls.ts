@@ -3,19 +3,19 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost
 export const API_URLS = {
   // Authentication Endpoints
   AUTH: {
-    CLIENT: {
-      LOGIN: `${API_BASE_URL}/auth/client/login`,
-      SIGNUP: `${API_BASE_URL}/auth/client/signup`,
-      LOGOUT: `${API_BASE_URL}/auth/client/logout`,
-      OAUTH: `${API_BASE_URL}/auth/client/oauth`,
-      OAUTH_URL: `${API_BASE_URL}/auth/client/oauth-url`,
+    STUDENT: {
+      LOGIN: `${API_BASE_URL}/auth/student/login`,
+      SIGNUP: `${API_BASE_URL}/auth/student/signup`,
+      LOGOUT: `${API_BASE_URL}/auth/student/logout`,
+      OAUTH: `${API_BASE_URL}/auth/student/oauth`,
+      OAUTH_URL: `${API_BASE_URL}/auth/student/oauth-url`,
     },
-    PROVIDER: {
-      LOGIN: `${API_BASE_URL}/auth/provider/login`,
-      SIGNUP: `${API_BASE_URL}/auth/provider/signup`,
-      LOGOUT: `${API_BASE_URL}/auth/provider/logout`,
-      OAUTH: `${API_BASE_URL}/auth/provider/oauth`,
-      OAUTH_URL: `${API_BASE_URL}/auth/provider/oauth-url`,
+    TUTOR: {
+      LOGIN: `${API_BASE_URL}/auth/tutor/login`,
+      SIGNUP: `${API_BASE_URL}/auth/tutor/signup`,
+      LOGOUT: `${API_BASE_URL}/auth/tutor/logout`,
+      OAUTH: `${API_BASE_URL}/auth/tutor/oauth`,
+      OAUTH_URL: `${API_BASE_URL}/auth/tutor/oauth-url`,
     },
     ADMIN: {
       LOGIN: `${API_BASE_URL}/auth/admin/login`,
@@ -28,9 +28,9 @@ export const API_URLS = {
   // Admin Endpoints
   ADMIN: {
     STATS: `${API_BASE_URL}/admin/stats`,
-    CLIENTS: `${API_BASE_URL}/admin/clients`,
-    PROVIDERS: `${API_BASE_URL}/admin/providers`,
-    PROJECTS: `${API_BASE_URL}/admin/projects`,
+    STUDENTS: `${API_BASE_URL}/admin/students`,
+    TUTORS: `${API_BASE_URL}/admin/tutors`,
+    COURSES: `${API_BASE_URL}/admin/courses`,
   },
 
   // User Profile Endpoints
@@ -43,29 +43,46 @@ export const API_URLS = {
 
   // Dashboard Endpoints
   DASHBOARD: {
-    CLIENT: {
-      STATS: `${API_BASE_URL}/dashboard/client/stats`,
-      RECENT_ACTIVITY: `${API_BASE_URL}/dashboard/client/activity`,
+    STUDENT: {
+      STATS: `${API_BASE_URL}/dashboard/student/stats`,
+      RECENT_ACTIVITY: `${API_BASE_URL}/dashboard/student/activity`,
     },
-    PROVIDER: {
-      STATS: `${API_BASE_URL}/dashboard/provider/stats`,
-      RECENT_ACTIVITY: `${API_BASE_URL}/dashboard/provider/activity`,
+    TUTOR: {
+      STATS: `${API_BASE_URL}/dashboard/tutor/stats`,
+      RECENT_ACTIVITY: `${API_BASE_URL}/dashboard/tutor/activity`,
     },
   },
 
-  // Projects & Services (For the dynamic platform)
+  // Platform Endpoints (Courses & Videos)
   PLATFORM: {
-    PROJECTS: {
-      LIST: `${API_BASE_URL}/projects`,
-      CREATE: `${API_BASE_URL}/projects/create`,
-      DETAILS: (id: string) => `${API_BASE_URL}/projects/${id}`,
-      UPDATE: (id: string) => `${API_BASE_URL}/projects/${id}/update`,
-      DELETE: (id: string) => `${API_BASE_URL}/projects/${id}/delete`,
+    COURSES: {
+      LIST: `${API_BASE_URL}/courses`,
+      CREATE: `${API_BASE_URL}/courses/create`,
+      DETAILS: (id: string) => `${API_BASE_URL}/courses/${id}`,
+      UPDATE: (id: string) => `${API_BASE_URL}/courses/${id}/update`,
+      DELETE: (id: string) => `${API_BASE_URL}/courses/${id}/delete`,
+      FREE: `${API_BASE_URL}/courses/free`,
+      PAID: `${API_BASE_URL}/courses/paid`,
+      BY_CATEGORY: (category: str) => `${API_BASE_URL}/courses/category/${category}`,
     },
-    SERVICES: {
-      LIST: `${API_BASE_URL}/services`,
-      CREATE: `${API_BASE_URL}/services/create`,
-      DETAILS: (id: string) => `${API_BASE_URL}/services/${id}`,
+    VIDEOS: {
+      UPLOAD: `${API_BASE_URL}/videos/upload`,
+      YOUTUBE: `${API_BASE_URL}/videos/youtube`,
+      DETAILS: (id: string) => `${API_BASE_URL}/videos/${id}`,
+      DELETE: (id: string) => `${API_BASE_URL}/videos/${id}`,
+    },
+    ENROLLMENTS: {
+      CREATE: `${API_BASE_URL}/enrollments/create`,
+      STUDENT: (id: string) => `${API_BASE_URL}/enrollments/student/${id}`,
+    },
+    PROGRESS: {
+      UPDATE: `${API_BASE_URL}/progress/update`,
+      STUDENT: (id: string) => `${API_BASE_URL}/progress/${id}`,
+    },
+    TUTORS: {
+      LIST: `${API_BASE_URL}/tutors`,
+      DETAILS: (id: string) => `${API_BASE_URL}/tutors/${id}`,
+      COURSES: (id: string) => `${API_BASE_URL}/tutors/${id}/courses`,
     },
     MESSAGES: {
       LIST: `${API_BASE_URL}/messages`,

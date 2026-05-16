@@ -42,6 +42,27 @@ export const adminService = {
     }
   },
 
+  logout: async (): Promise<ApiResponse<void>> => {
+    try {
+      const response = await fetch(API_URLS.AUTH.ADMIN.LOGOUT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      
+      localStorage.removeItem("admin_token");
+      localStorage.removeItem("user_role");
+      
+      if (!response.ok) {
+        return { success: false, message: 'Logout failed' };
+      }
+      
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: 'An error occurred during admin logout', error };
+    }
+  },
+
   updatePassword: async (token: string, data: any): Promise<ApiResponse<void>> => {
     try {
       const response = await fetch(API_URLS.USER.CHANGE_PASSWORD, {
@@ -79,8 +100,8 @@ export const adminService = {
     return await response.json();
   },
 
-  listClients: async (token: string): Promise<any[]> => {
-    const response = await fetch(API_URLS.ADMIN.CLIENTS, {
+  listStudents: async (token: string): Promise<any[]> => {
+    const response = await fetch(API_URLS.ADMIN.STUDENTS, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -89,8 +110,8 @@ export const adminService = {
     return await response.json();
   },
 
-  listProviders: async (token: string): Promise<any[]> => {
-    const response = await fetch(API_URLS.ADMIN.PROVIDERS, {
+  listTutors: async (token: string): Promise<any[]> => {
+    const response = await fetch(API_URLS.ADMIN.TUTORS, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -99,8 +120,8 @@ export const adminService = {
     return await response.json();
   },
 
-  listProjects: async (token: string): Promise<any[]> => {
-    const response = await fetch(API_URLS.ADMIN.PROJECTS, {
+  listCourses: async (token: string): Promise<any[]> => {
+    const response = await fetch(API_URLS.ADMIN.COURSES, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

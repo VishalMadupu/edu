@@ -16,15 +16,24 @@ function CallbackHandler() {
       localStorage.setItem("token", token);
       localStorage.setItem("user_role", role);
 
+      const isNewUser = searchParams.get("new_user") === "true";
+
+      // Redirect to profile update if new user, otherwise to dashboard
+      if (isNewUser) {
+        router.push(`/${role === 'tutor' || role === 'provider' ? 'tutor' : 'student'}/profile?setup=complete`);
+        return;
+      }
+
       // Redirect to appropriate dashboard
-      if (role === "client") {
-        router.push("/client/dashboard");
-      } else if (role === "provider") {
-        router.push("/serviceprovider/dashboard");
+      if (role === "student" || role === "client") {
+        router.push("/student/dashboard");
+      } else if (role === "tutor" || role === "provider") {
+        router.push("/tutor/dashboard");
       } else {
         router.push("/");
       }
-    } else {
+    }
+ else {
       // Handle error or missing params
       console.error("Missing token or role in OAuth callback");
       router.push("/login");

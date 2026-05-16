@@ -1,10 +1,10 @@
 import { LoginCredentials, SignupData, AuthResponse, ApiResponse } from './interface';
 import { API_URLS } from './urls';
 
-export const ServiceProviderService = {
+export const StudentService = {
   login: async (credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> => {
     try {
-      const response = await fetch(API_URLS.AUTH.PROVIDER.LOGIN, {
+      const response = await fetch(API_URLS.AUTH.STUDENT.LOGIN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
@@ -18,13 +18,13 @@ export const ServiceProviderService = {
       
       return { success: true, data };
     } catch (error) {
-      return { success: false, message: 'An error occurred during service provider login', error };
+      return { success: false, message: 'An error occurred during student login', error };
     }
   },
 
   signup: async (data: SignupData): Promise<ApiResponse<AuthResponse>> => {
     try {
-      const response = await fetch(API_URLS.AUTH.PROVIDER.SIGNUP, {
+      const response = await fetch(API_URLS.AUTH.STUDENT.SIGNUP, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -38,13 +38,13 @@ export const ServiceProviderService = {
       
       return { success: true, data: responseData };
     } catch (error) {
-      return { success: false, message: 'An error occurred during service provider sign up', error };
+      return { success: false, message: 'An error occurred during student sign up', error };
     }
   },
 
   logout: async (): Promise<ApiResponse<void>> => {
     try {
-      const response = await fetch(API_URLS.AUTH.PROVIDER.LOGOUT, {
+      const response = await fetch(API_URLS.AUTH.STUDENT.LOGOUT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // Ensure session cookies are cleared
@@ -59,14 +59,14 @@ export const ServiceProviderService = {
       
       return { success: true };
     } catch (error) {
-      return { success: false, message: 'An error occurred during service provider logout', error };
+      return { success: false, message: 'An error occurred during student logout', error };
     }
   },
   
   getDashboardData: async (): Promise<ApiResponse<any>> => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(API_URLS.DASHBOARD.PROVIDER.STATS, {
+      const response = await fetch(API_URLS.DASHBOARD.STUDENT.STATS, {
         method: 'GET',
         headers: { 
           'Content-Type': 'application/json',
@@ -82,13 +82,13 @@ export const ServiceProviderService = {
       
       return { success: true, data };
     } catch (error) {
-      return { success: false, message: 'An error occurred fetching service provider dashboard', error };
+      return { success: false, message: 'An error occurred fetching student dashboard', error };
     }
   },
   
   oauthLogin: (provider: 'google' | 'github'): void => {
     // Direct browser navigation ensures the session cookie (with OAuth state)
     // is properly set on the backend domain — fetch() doesn't work cross-origin.
-    window.location.href = API_URLS.AUTH.PROVIDER.OAUTH;
+    window.location.href = API_URLS.AUTH.STUDENT.OAUTH;
   }
 };

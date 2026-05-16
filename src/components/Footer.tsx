@@ -11,11 +11,11 @@ export default function Footer() {
               href="/"
               className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white"
             >
-              Service<span className="text-blue-600">Link</span>
+              Ed<span className="text-blue-600">tech</span>
             </Link>
             <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
-              The premier platform connecting top-tier independent professionals
-              with ambitious clients worldwide.
+              The modern AI-powered learning platform connecting ambitious
+              students with world-class tutors.
             </p>
             <div className="flex gap-4 mt-6">
               <a
@@ -44,7 +44,7 @@ export default function Footer() {
 
           <div>
             <h3 className="font-semibold text-slate-900 dark:text-white mb-4">
-              Platform
+              Learning
             </h3>
             <ul className="space-y-3">
               <li>
@@ -57,10 +57,10 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/services"
+                  href="/courses"
                   className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
                 >
-                  Our Services
+                  All Courses
                 </Link>
               </li>
               <li>
@@ -68,7 +68,7 @@ export default function Footer() {
                   href="#"
                   className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
                 >
-                  Pricing
+                  Free Tutorials
                 </Link>
               </li>
             </ul>
@@ -76,7 +76,7 @@ export default function Footer() {
 
           <div>
             <h3 className="font-semibold text-slate-900 dark:text-white mb-4">
-              Users
+              Portals
             </h3>
             <ul className="space-y-3">
               <li>
@@ -89,26 +89,26 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/client/login"
+                  href="/student/login"
                   className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
                 >
-                  Client Portal
+                  Student Portal
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/serviceprovider/login"
+                  href="/tutor/login"
                   className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
                 >
-                  Provider Portal
+                  Teacher Portal
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/client/signup"
+                  href="/student/signup"
                   className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
                 >
-                  Find a Professional
+                  Become a Learner
                 </Link>
               </li>
             </ul>
@@ -148,8 +148,7 @@ export default function Footer() {
         </div>
         <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            &copy; {new Date().getFullYear()} ServiceLink Inc. All rights
-            reserved.
+            &copy; {new Date().getFullYear()} Edtech. All rights reserved.
           </p>
           <div className="flex flex-col items-center md:items-end gap-1">
             <p className="text-sm font-medium text-slate-900 dark:text-white">

@@ -1,10 +1,10 @@
 import { LoginCredentials, SignupData, AuthResponse, ApiResponse } from './interface';
 import { API_URLS } from './urls';
 
-export const ClientService = {
+export const TutorService = {
   login: async (credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> => {
     try {
-      const response = await fetch(API_URLS.AUTH.CLIENT.LOGIN, {
+      const response = await fetch(API_URLS.AUTH.TUTOR.LOGIN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
@@ -18,13 +18,13 @@ export const ClientService = {
       
       return { success: true, data };
     } catch (error) {
-      return { success: false, message: 'An error occurred during client login', error };
+      return { success: false, message: 'An error occurred during tutor login', error };
     }
   },
 
   signup: async (data: SignupData): Promise<ApiResponse<AuthResponse>> => {
     try {
-      const response = await fetch(API_URLS.AUTH.CLIENT.SIGNUP, {
+      const response = await fetch(API_URLS.AUTH.TUTOR.SIGNUP, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -38,13 +38,13 @@ export const ClientService = {
       
       return { success: true, data: responseData };
     } catch (error) {
-      return { success: false, message: 'An error occurred during client sign up', error };
+      return { success: false, message: 'An error occurred during tutor sign up', error };
     }
   },
 
   logout: async (): Promise<ApiResponse<void>> => {
     try {
-      const response = await fetch(API_URLS.AUTH.CLIENT.LOGOUT, {
+      const response = await fetch(API_URLS.AUTH.TUTOR.LOGOUT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // Ensure session cookies are cleared
@@ -59,14 +59,14 @@ export const ClientService = {
       
       return { success: true };
     } catch (error) {
-      return { success: false, message: 'An error occurred during client logout', error };
+      return { success: false, message: 'An error occurred during tutor logout', error };
     }
   },
   
   getDashboardData: async (): Promise<ApiResponse<any>> => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(API_URLS.DASHBOARD.CLIENT.STATS, {
+      const response = await fetch(API_URLS.DASHBOARD.TUTOR.STATS, {
         method: 'GET',
         headers: { 
           'Content-Type': 'application/json',
@@ -82,13 +82,13 @@ export const ClientService = {
       
       return { success: true, data };
     } catch (error) {
-      return { success: false, message: 'An error occurred fetching client dashboard', error };
+      return { success: false, message: 'An error occurred fetching tutor dashboard', error };
     }
   },
   
   oauthLogin: (provider: 'google' | 'github'): void => {
     // Direct browser navigation ensures the session cookie (with OAuth state)
     // is properly set on the backend domain — fetch() doesn't work cross-origin.
-    window.location.href = API_URLS.AUTH.CLIENT.OAUTH;
+    window.location.href = API_URLS.AUTH.TUTOR.OAUTH;
   }
 };

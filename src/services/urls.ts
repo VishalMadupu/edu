@@ -56,7 +56,7 @@ export const API_URLS = {
   // Platform Endpoints (Courses & Videos)
   PLATFORM: {
     COURSES: {
-      LIST: `${API_BASE_URL}/courses`,
+      LIST: `${API_BASE_URL}/courses/`,
       CREATE: `${API_BASE_URL}/courses/create`,
       DETAILS: (id: string) => `${API_BASE_URL}/courses/${id}`,
       UPDATE: (id: string) => `${API_BASE_URL}/courses/${id}/update`,
@@ -80,7 +80,7 @@ export const API_URLS = {
       STUDENT: (id: string) => `${API_BASE_URL}/progress/${id}`,
     },
     TUTORS: {
-      LIST: `${API_BASE_URL}/tutors`,
+      LIST: `${API_BASE_URL}/tutors/`,
       DETAILS: (id: string) => `${API_BASE_URL}/tutors/${id}`,
       COURSES: (id: string) => `${API_BASE_URL}/tutors/${id}/courses`,
     },
